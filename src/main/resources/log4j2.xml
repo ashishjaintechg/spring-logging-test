@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+	<Properties>
+		<Property name="LOG_PATTERN" value="[%thread][%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [testId:%X{testId}] [%t] [%c{1.}] - %msg%n"/>
+		<Property name="LOG_DIR" value="log"/>
+
+	</Properties>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+           <!-- <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" /> --> 
+           <PatternLayout pattern="[%thread][%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%c{1.}.%M %L] - %msg%n" />
+        </Console>
+       
+        <RollingFile
+    name="rollingFile"
+    fileName="${LOG_DIR}/application.log"
+    filePattern="${LOG_DIR}/application.%i.log"
+    ignoreExceptions="false">
+    <PatternLayout>
+        <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %m%n</Pattern>
+    </PatternLayout>
+    <Policies>
+        <SizeBasedTriggeringPolicy size="10K" />
+    </Policies>
+    <DefaultRolloverStrategy max="5" />
+</RollingFile>
+        <Async name="Async">
+        	<AppenderRef ref ="rollingFile"/>
+        </Async>
+                <RollingFile
+    name="rollingFileTest"
+    fileName="${LOG_DIR}/test-application.log"
+    filePattern="${LOG_DIR}/test-application.%i.log"
+    ignoreExceptions="false">
+    <PatternLayout>
+        <Pattern>${LOG_PATTERN}</Pattern>
+    </PatternLayout>
+    <Policies>
+        <SizeBasedTriggeringPolicy size="10K" />
+    </Policies>
+    <DefaultRolloverStrategy max="5" />
+</RollingFile>
+        <Async name="AsyncTest">
+        	<AppenderRef ref ="rollingFileTest"/>
+        </Async>
+    </Appenders>
+    <Loggers>
+    <Logger name ="test.ashishjaintechg.jpa" level="debug"  additivity="false">
+        	<AppenderRef ref="AsyncTest"/>
+            <AppenderRef ref="console" />
+        </Logger>
+        <Root level="info" additivity="false">
+        	<AppenderRef ref="Async"/>
+            <AppenderRef ref="console" />
+        </Root>
+        </Loggers>
+</Configuration>
